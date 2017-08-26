@@ -2,14 +2,25 @@
 """ Demonstrate how to simulate dynamics forwards and backwards in time using RK4.
 """
 
-from utils.ode import runge_kutta
+import argparse
 import numpy as np
 import matplotlib.pyplot as plt
+import sys
+from utils.ode import runge_kutta
 
-def main():
-    f = lambda t, y: (np.cos(t) + np.sin(t)) * np.exp(t) 
+
+def main(argv):
+    parser = argparse.ArgumentParser(description='Run ODE forward and backward'
+                                     ' integration comparison')
+    parser.add_argument('--dt',
+                        type=float,
+                        required=False,
+                        help='time step', default=0.1)
+    args = parser.parse_args(argv)
+
+    f = lambda t, y: (np.cos(t) + np.sin(t)) * np.exp(t)
     dy = runge_kutta(f)
-    dt = 0.1
+    dt = args.dt
     time = np.linspace(0, 10, 100, endpoint=False)
     y_real = lambda t: np.sin(t) * np.exp(t)
 
@@ -53,4 +64,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main(sys.argv[1:])
